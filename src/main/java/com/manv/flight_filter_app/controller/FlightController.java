@@ -28,6 +28,8 @@ public class FlightController {
         this.filterService = filterService;
     }
 
+    //todo RestAdvise
+    //todo exceptions
     @PostMapping("/filter")
     public ResponseEntity <List<Flight>> getFilteredFlightList (@RequestBody FlightsAndFiltersDTO flightsAndFiltersDTO) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
         return new ResponseEntity<>(
