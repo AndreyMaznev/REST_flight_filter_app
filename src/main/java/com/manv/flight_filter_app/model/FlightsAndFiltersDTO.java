@@ -1,9 +1,6 @@
 package com.manv.flight_filter_app.model;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;

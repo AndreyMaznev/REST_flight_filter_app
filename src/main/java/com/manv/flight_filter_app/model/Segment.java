@@ -1,12 +1,10 @@
 package com.manv.flight_filter_app.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.NoArgsConstructor;
-import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Objects;
+
 
 
 
