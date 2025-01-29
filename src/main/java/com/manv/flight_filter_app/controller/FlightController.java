@@ -28,6 +28,17 @@ public class FlightController {
         this.filterService = filterService;
     }
 
+    @GetMapping
+    public ResponseEntity <List <Flight>> getAllUnfilteredFlights () {
+        return new ResponseEntity<>(flightService.getAllUnfilteredFlights(), HttpStatus.OK);
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity <Flight> createFlight (@RequestBody Flight flight) {
+
+        return new ResponseEntity<>(flightService.createFlight(flight), HttpStatus.CREATED);
+    }
+
     //todo RestAdvise
     //todo exceptions
     @PostMapping("/filter")
@@ -41,4 +52,6 @@ public class FlightController {
     public ResponseEntity <Set <String>> getAvailableFilters () {
         return new ResponseEntity<>(filterService.getAvailableFilters(), HttpStatus.OK);
     }
+
+
 }
