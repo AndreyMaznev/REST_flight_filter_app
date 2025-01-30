@@ -6,26 +6,31 @@ import com.manv.flight_filter_app.model.Flight;
 import com.manv.flight_filter_app.model.FlightFilter;
 import com.manv.flight_filter_app.model.FlightsAndFiltersDTO;
 import com.manv.flight_filter_app.model.Segment;
+import com.manv.flight_filter_app.repository.FlightRepository;
+import com.manv.flight_filter_app.repository.SegmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 @Service
 public class FlightService {
     private final FilterService filterService;
+    private final FlightRepository flightRepository;
+    private final SegmentRepository segmentRepository;
 
     @Autowired
-    public FlightService(FilterService filterService) {
+    public FlightService(FilterService filterService, FlightRepository flightRepository, SegmentRepository segmentRepository) {
         this.filterService = filterService;
+        this.flightRepository = flightRepository;
+        this.segmentRepository = segmentRepository;
     }
 
-    public List <Flight> executeAllFiltersFromDto (FlightsAndFiltersDTO flightsAndFiltersDTO) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+    public List<Flight> executeAllFiltersFromDto(FlightsAndFiltersDTO flightsAndFiltersDTO) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
         return executeAllFilters(filterService.getExactFiltersClassesFromNames(flightsAndFiltersDTO.getFilterList())
-                ,flightsAndFiltersDTO.getFlightList());
+                , flightsAndFiltersDTO.getFlightList());
     }
 
     public List<Flight> executeAllFilters(Set<FlightFilter> filterList, List<Flight> flightList) {
@@ -50,4 +55,38 @@ public class FlightService {
         return new Flight(segments);
     }
 
+    public List<Flight> getAllUnfilteredFlights() {
+        return flightRepository.findAll();
+    }
+
+    public Flight createFlight(Flight flight) {
+        if (flight == null) {
+            throw new IllegalArgumentException("flight cannot be null");
+        }
+
+        if (flight.getSegments() != null && !flight.getSegments().isEmpty()) {
+            for (Segment segment : flight.getSegments()) {
+                segment.setMainFlight(flight);
+                segment.setFlightId(flight.getFlightId());
+
+            }
+        }
+        return flightRepository.save(flight);
+    }
+    public List <Segment> findByMainFlightFlightId(UUID flightId) {
+        return segmentRepository.findByMainFlightFlightId(flightId);
+    }
+    public List<Flight> findBySegmentDatesBetween(LocalDateTime departureDateFrom, LocalDateTime departureDateTo,
+                                                  LocalDateTime arrivalDateFrom, LocalDateTime arrivalDateTo) {
+
+        LocalDateTime departureDateTimeFrom = Objects.requireNonNullElseGet(departureDateFrom, LocalDateTime::now);
+        LocalDateTime departureDateTimeTo = Objects.requireNonNullElseGet(departureDateTo,
+                () -> LocalDateTime.of(2050, 12, 31, 0, 0, 0));
+
+        LocalDateTime arrivalDateTimeFrom = Objects.requireNonNullElseGet(arrivalDateFrom, LocalDateTime::now);
+        LocalDateTime arrivalDateTimeTo = Objects.requireNonNullElseGet(arrivalDateTo,
+                () -> LocalDateTime.of(2050, 12, 31, 0, 0, 0));
+
+        return flightRepository.findBySegmentDatesBetween(departureDateTimeFrom, departureDateTimeTo, arrivalDateTimeFrom, arrivalDateTimeTo);
+    }
 }
