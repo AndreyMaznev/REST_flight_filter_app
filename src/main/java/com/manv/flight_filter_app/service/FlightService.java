@@ -12,9 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 @Service
 public class FlightService {
@@ -73,5 +72,21 @@ public class FlightService {
             }
         }
         return flightRepository.save(flight);
+    }
+    public List <Segment> findByMainFlightFlightId(UUID flightId) {
+        return segmentRepository.findByMainFlightFlightId(flightId);
+    }
+    public List<Flight> findBySegmentDatesBetween(LocalDateTime departureDateFrom, LocalDateTime departureDateTo,
+                                                  LocalDateTime arrivalDateFrom, LocalDateTime arrivalDateTo) {
+
+        LocalDateTime departureDateTimeFrom = Objects.requireNonNullElseGet(departureDateFrom, LocalDateTime::now);
+        LocalDateTime departureDateTimeTo = Objects.requireNonNullElseGet(departureDateTo,
+                () -> LocalDateTime.of(2050, 12, 31, 0, 0, 0));
+
+        LocalDateTime arrivalDateTimeFrom = Objects.requireNonNullElseGet(arrivalDateFrom, LocalDateTime::now);
+        LocalDateTime arrivalDateTimeTo = Objects.requireNonNullElseGet(arrivalDateTo,
+                () -> LocalDateTime.of(2050, 12, 31, 0, 0, 0));
+
+        return flightRepository.findBySegmentDatesBetween(departureDateTimeFrom, departureDateTimeTo, arrivalDateTimeFrom, arrivalDateTimeTo);
     }
 }

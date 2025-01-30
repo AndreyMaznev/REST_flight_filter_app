@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Flights and Segments</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        /* Table Responsive */
+        @charset "UTF-8";
+        @import url(https://fonts.googleapis.com/css?family=Open+Sans:300,400,700);
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            font-weight: 300;
+            line-height: 1.42em;
+            color: #A7A1AE;
+            background-color: #1F2739;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 3em;
+            font-weight: 300;
+            line-height: 1em;
+            text-align: center;
+            color: #4DC3FA;
+        }
+
+        h2 {
+            font-size: 1em;
+            font-weight: 300;
+            text-align: center;
+            display: block;
+            line-height: 1em;
+            padding-bottom: 2em;
+            color: #FB667A;
+        }
+
+        h2 a {
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #FB667A;
+            text-decoration: none;
+        }
+
+        .blue { color: #185875; }
+        .yellow { color: #FFF842; }
+
+        .container th h1 {
+            font-weight: bold;
+            font-size: 1em;
+            text-align: left;
+            color: #185875;
+        }
+
+        .container td {
+            font-weight: normal;
+            font-size: 1em;
+            -webkit-box-shadow: 0 2px 2px -2px #0E1119;
+            -moz-box-shadow: 0 2px 2px -2px #0E1119;
+            box-shadow: 0 2px 2px -2px #0E1119;
+        }
+
+        .container {
+            text-align: left;
+            overflow: hidden;
+            width: 100%;
+            max-width: 100%;
+            margin: 0 auto;
+            display: table;
+            padding: 0 0 8em 0;
+        }
+
+        .container td, .container th {
+            padding-bottom: 2%;
+            padding-top: 2%;
+            padding-left: 2%;
+        }
+
+        /* Background-color of the odd rows */
+        .container tr:nth-child(odd) {
+            background-color: #323C50;
+        }
+
+        /* Background-color of the even rows */
+        .container tr:nth-child(even) {
+            background-color: #2C3446;
+        }
+
+        .container th {
+            background-color: #1F2739;
+        }
+
+        .container td:first-child { color: #FB667A; }
+
+        .container tr:hover {
+            background-color: #464A52;
+            -webkit-box-shadow: 0 6px 6px -6px #0E1119;
+            -moz-box-shadow: 0 6px 6px -6px #0E1119;
+            box-shadow: 0 6px 6px -6px #0E1119;
+        }
+
+        .container td:hover {
+            background-color: #FFF842;
+            color: #403E10;
+            font-weight: bold;
+            box-shadow: #7F7C21 -1px 1px, #7F7C21 -2px 2px, #7F7C21 -3px 3px, #7F7C21 -4px 4px, #7F7C21 -5px 5px, #7F7C21 -6px 6px;
+            transform: translate3d(6px, -6px, 0);
+            transition-delay: 0s;
+            transition-duration: 0.4s;
+            transition-property: all;
+            transition-timing-function: linear;
+        }
+
+        @media (max-width: 800px) {
+            .container td:nth-child(4),
+            .container th:nth-child(4) { display: none; }
+        }
+
+        /* Additional styles for filter section */
+        .filter-section {
+            margin-bottom: 20px;
+            color: #A7A1AE;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .filter-section label {
+            margin-right: 10px;
+        }
+
+        .filter-section div {
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .segments-details {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #eaeaea;
+            border: 1px solid #ccc;
+            color: #A7A1AE;
+        }
+
+        .flight-row {
+            cursor: pointer;
+        }
+
+        /* Center the container */
+        .centered-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Responsive table styling */
+        .responsive-table {
+            width: 100%;
+            max-width: 100%;
+            overflow-x: auto;
+            display: block;
+            margin-bottom: 20px;
+        }
+
+        .responsive-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .responsive-table th, .responsive-table td {
+            white-space: nowrap;
+        }
+
+        @media (max-width: 768px) {
+            .responsive-table {
+                width: 100%;
+                overflow-x: scroll;
+            }
+
+            .filter-section div {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .filter-section label {
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body class="centered-container">
+
+<div class="filter-section">
+    <div>
+        <label for="departureDateFrom">Дата и время вылета от:</label>
+        <input type="datetime-local" id="departureDateFrom">
+
+        <label for="departureDateTo">Дата и время вылета до:</label>
+        <input type="datetime-local" id="departureDateTo">
+    </div>
+
+    <div>
+        <label for="arrivalDateFrom">Дата и время прилета от:</label>
+        <input type="datetime-local" id="arrivalDateFrom">
+
+        <label for="arrivalDateTo">Дата и время прилета до:</label>
+        <input type="datetime-local" id="arrivalDateTo">
+    </div>
+
+    <button id="filterButton" style="background-color: #4DC3FA; color: white; border: none; padding: 10px 20px; font-size: 1em; cursor: pointer;">Filter Flights</button>
+</div>
+
+<h1>Flights</h1>
+<div class="responsive-table">
+    <table id="flightsTable" class="container">
+        <thead>
+        <tr>
+            <th><h1>Flight Number</h1></th>
+            <th><h1>Owner Company</h1></th>
+            <th><h1>Short Description</h1></th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Rows will be added here dynamically -->
+        </tbody>
+    </table>
+</div>
+
+<script>
+    $(document).ready(function() {
+        function loadFlights(departureDateFrom, departureDateTo, arrivalDateFrom, arrivalDateTo) {
+            var url = '/api/v1/flights';
+            if (departureDateFrom || departureDateTo || arrivalDateFrom || arrivalDateTo) {
+                url += '?';
+                var params = [];
+                if (departureDateFrom) {
+                    params.push('departureDateFrom=' + encodeURIComponent(departureDateFrom));
+                }
+                if (departureDateTo) {
+                    params.push('departureDateTo=' + encodeURIComponent(departureDateTo));
+                }
+                if (arrivalDateFrom) {
+                    params.push('arrivalDateFrom=' + encodeURIComponent(arrivalDateFrom));
+                }
+                if (arrivalDateTo) {
+                    params.push('arrivalDateTo=' + encodeURIComponent(arrivalDateTo));
+                }
+                url += params.join('&');
+            }
+
+            $.get(url, function(flights) {
+                var flightsTableBody = $('#flightsTable tbody');
+                flightsTableBody.empty(); // Clear existing rows
+
+                flights.forEach(function(flight) {
+                    var row = $('<tr>').data('flight-id', flight.flightId);
+
+                    row.append($('<td>').text(flight.flightNumber));
+                    row.append($('<td>').text(flight.ownerCompany));
+                    row.append($('<td>').text(flight.shortDescription));
+
+                    // Append the row to the table body
+                    flightsTableBody.append(row);
+
+                    // Fetch segments for this flight immediately
+                    fetchAndDisplaySegments(flight.flightId, row);
+                });
+            }).fail(function(error) {
+                console.error("Error fetching flights:", error);
+            });
+        }
+
+        function fetchAndDisplaySegments(flightId, row) {
+            $.get('/api/v1/flights/segments/' + flightId, function(segments) {
+                var detailsDiv = $('<div class="segments-details">');
+                if (segments.length > 0) {
+                    var segmentsList = $('<ul>');
+                    segments.forEach(function(segment) {
+                        var segmentItem = $('<li>')
+                            .text('Departure: ' + new Date(segment.departureDate).toLocaleString() +
+                                ', Arrival: ' + new Date(segment.arrivalDate).toLocaleString());
+                        segmentsList.append(segmentItem);
+                    });
+                    detailsDiv.append(segmentsList);
+                } else {
+                    detailsDiv.text('No segments found');
+                }
+                row.after(detailsDiv);
+            }).fail(function(error) {
+                console.error("Error fetching segments for flight ID " + flightId + ":", error);
+            });
+        }
+
+        $('#filterButton').on('click', function() {
+            var departureDateFrom = $('#departureDateFrom').val();
+            var departureDateTo = $('#departureDateTo').val();
+            var arrivalDateFrom = $('#arrivalDateFrom').val();
+            var arrivalDateTo = $('#arrivalDateTo').val();
+
+            if (departureDateFrom) {
+                departureDateFrom = new Date(departureDateFrom).toISOString();
+            }
+            if (departureDateTo) {
+                departureDateTo = new Date(departureDateTo).toISOString();
+            }
+            if (arrivalDateFrom) {
+                arrivalDateFrom = new Date(arrivalDateFrom).toISOString();
+            }
+            if (arrivalDateTo) {
+                arrivalDateTo = new Date(arrivalDateTo).toISOString();
+            }
+
+            loadFlights(departureDateFrom, departureDateTo, arrivalDateFrom, arrivalDateTo);
+        });
+
+        // Initial load of flights without filters
+        loadFlights(null, null, null, null);
+    });
+</script>
+
+</body>
+</html>

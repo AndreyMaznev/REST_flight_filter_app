@@ -22,6 +22,7 @@ public class Segment {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     @Column (name = "departure_date")
     private LocalDateTime departureDate;
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     @Column (name = "arrival_date")
     private LocalDateTime arrivalDate;
