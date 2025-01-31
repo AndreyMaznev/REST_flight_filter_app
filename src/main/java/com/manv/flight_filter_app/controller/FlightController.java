@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -35,10 +35,6 @@ public class FlightController {
         this.flightRepository = flightRepository;
     }
 
-//    @GetMapping
-//    public ResponseEntity <List <Flight>> getAllUnfilteredFlights () {
-//        return new ResponseEntity<>(flightService.getAllUnfilteredFlights(), HttpStatus.OK);
-//    }
 
     @GetMapping
     public List<Flight> getAllFlights(
@@ -49,8 +45,6 @@ public class FlightController {
     ) {
         return flightService.findBySegmentDatesBetween(departureDateFrom, departureDateTo, arrivalDateFrom, arrivalDateTo);
     }
-//        return flightService.getAllFlightsFilteredByDate (fromDate, toDate);
-//    }
 
     @PostMapping("/create")
     public ResponseEntity <Flight> createFlight (@RequestBody Flight flight) {
@@ -75,6 +69,4 @@ public class FlightController {
     public List <Segment> getSegmentsByFlightId(@PathVariable UUID flightId) {
         return flightService.findByMainFlightFlightId(flightId);
     }
-
-
 }
