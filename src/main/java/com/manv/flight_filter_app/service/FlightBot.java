@@ -32,7 +32,7 @@ public class FlightBot extends TelegramLongPollingBot {
 
     @Override
     public String getBotToken() {
-        return "8057544697:AAEl_E1Dmb37DYEJcx3EU2y5q4gt44zi-Oo"; // Замените на токен вашего бота
+        return ""; // Замените на токен вашего бота
     }
 
     @Override
