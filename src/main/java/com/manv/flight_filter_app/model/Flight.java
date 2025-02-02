@@ -24,7 +24,7 @@ public class Flight {
     @Column (name = "short_description")
     private String shortDescription;
 
-    @OneToMany (mappedBy = "mainFlight", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany (mappedBy = "mainFlight", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JsonManagedReference
     private List<Segment> segments;
 
